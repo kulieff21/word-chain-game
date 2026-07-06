@@ -63,5 +63,18 @@ def play_game():
         last_word = word
         current_player = 2 if current_player == 1 else 1
 
+    show_summary(current_player)
+
+def show_summary(losing_player):
+    winner = 2 if losing_player == 1 else 1
+
+    print("\n=== Game Summary ===")
+    print(f"Winner: Player {winner}")
+    print(f"Total words played: {len(WORDS_USED)}")
+
+    if WORDS_USED:
+        print("Word chain:")
+        print(" -> ".join(WORDS_USED))
+
 if __name__ == "__main__":
     play_game()
