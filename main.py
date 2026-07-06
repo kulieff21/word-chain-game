@@ -1,4 +1,20 @@
+import threading
+
 WORDS_USED = []
+
+def input_with_timeout(prompt, timeout):
+    print(prompt, end="", flush=True)
+    user_input = [None]
+
+    def get_input():
+        user_input[0] = input()
+
+    thread = threading.Thread(target=get_input)
+    thread.daemon = True
+    thread.start()
+    thread.join(timeout)
+
+    return user_input[0]
 
 def is_valid_word(word, last_word):
     if not word:
@@ -20,13 +36,21 @@ def is_valid_word(word, last_word):
 
 def play_game():
     print("=== Word Chain Game ===")
-    print("Rule: Your word must start with the last letter of the previous word.\n")
+    print("Rule: Your word must start with the last letter of the previous word.")
+    print("You have 10 seconds per turn!\n")
 
     last_word = ""
     current_player = 1
+    TIME_LIMIT = 10
 
     while True:
-        word = input(f"Player {current_player}, enter a word: ").strip()
+        word = input_with_timeout(f"Player {current_player}, enter a word: ", TIME_LIMIT)
+
+        if word is None:
+            print(f"\nTime's up! Player {current_player} loses.")
+            break
+
+        word = word.strip()
 
         is_valid, error_message = is_valid_word(word, last_word)
 
